@@ -23,26 +23,29 @@ var snake = (function() {
     // x=1,y=0 is right, x=-1,y=0 is left, x=0,y=1 is up, x=0,y=-1 is down.
     var currentDirection = {x:1, y:0};
 
-    // Set the current direction. Invoked from the game controller on user key presses.
+    // The direction that the user requests that the snake travel in. Same format as currentDirection.
+    // May not be valid, as the user could request that the snake travel backwards into itself. Ignored in this case.
+    // Needed because the player can change directions twice before a move, so the previous valid direction must be cached.
+    var targetDirection = {x:1, y:0};
+
+    // Set the target direction. Invoked from the game controller on user key presses.
     // Argument should be an object in the form {x:#, y:#}
     // Note that keyboard input only changes the direction, it doesn't actually move the snake.
-    var setCurrentDirection = function(direction) {
-
-        console.log('snake setCurrentDirection() invoked. Argument direction x: ' + direction.x + ' y: ' + direction.y);
+    var setTargetDirection = function(direction) {
 
         // Check that direction array contains a valid direction. Not a thorough test.
         console.assert(Math.abs(direction.x + direction.y) === 1, "Non-valid direction was set.");
 
-        // Check that the snake isn't commanded to move backwards into itself.
-        if ( (currentDirection.x + direction.x === 0) || (currentDirection.y + direction.y === 0) ) { return; }
+        targetDirection = direction;
 
-        currentDirection = direction;
+        console.log('setTargetDirection invoked.');
+        console.log('... current direction is: x: ' + currentDirection.x + ' y: ' + currentDirection.y);
+        console.log('... target direction is: x: ' + targetDirection.x + ' y: ' + targetDirection.y);
 
-        console.log('... currentDirection is now: x: ' + currentDirection.x + ' y: ' + currentDirection.y);
     };
 
-    // Returns the target square for the snake's head to move to, based on the currentDirection.
-    var getTargetSquare = function() {
+    // Returns the target square for the snake's head to move to, based on the targetDirection or currentDirection.
+    var getTargetSquare = function(targetOrCurrentDirection) {
 
         var snakeHeadSquare = snakeGridSquares[0];
 
@@ -73,16 +76,16 @@ var snake = (function() {
 
         };
 
-        if (currentDirection.x === 1) {
+        if (targetOrCurrentDirection.x === 1) {
             // If target direction is right, return the cell's next sibling, or the first cell in the row if off grid.
             return getHorizontalSquare('nextElementSibling', 'firstElementChild'); 
-        } else if (currentDirection.x === -1) {
+        } else if (targetOrCurrentDirection.x === -1) {
             // If target direction is left, return the cell's previous sibling, or the last cell in the row if off grid.
             return getHorizontalSquare('previousElementSibling', 'lastElementChild'); 
-        } else if (currentDirection.y === 1) {
+        } else if (targetOrCurrentDirection.y === 1) {
             // If target direction is up, return the cell with the same index in the row above, or the bottom row if off grid.
             return getVerticalSquare('previousElementSibling', 'lastElementChild');
-        } else if (currentDirection.y === -1) {
+        } else if (targetOrCurrentDirection.y === -1) {
             // If target direction is down, return the cell with the same index in the row below, or the top row if off grid.
             return getVerticalSquare('nextElementSibling', 'firstElementChild');
         }
@@ -90,13 +93,21 @@ var snake = (function() {
     };
 
     // Invoked by controller when the snake needs to move.
-    // Gets the target square and implements a move if possible.
+    // Gets the target square to move the snake head into, and implements a move if possible.
     // Returns 'true' if food eaten, and 'false' if snake tries to eat itself (ie game over).
     var move = function() {
 
         console.log('snake move() invoked.');
+        console.log('... target direction is: x: ' + targetDirection.x + ' y: ' + targetDirection.y);
 
-        var targetSquare = getTargetSquare();
+        // If the target direction would cause the snake to go backwards into itself, ignore the requested target
+        // direction. If not, the move can go ahead, so currentDirection is assigned the value of targetDirection.
+        if ( (currentDirection.x + targetDirection.x === 0) && (currentDirection.y + targetDirection.y === 0) ) {
+            var targetSquare = getTargetSquare(currentDirection);
+        } else {
+            var targetSquare = getTargetSquare(targetDirection);
+            currentDirection = targetDirection;
+        }
 
         // Game over if the snake tries to eat itself.
         if (targetSquare.classList.contains('snake')) { return false; }
@@ -131,12 +142,13 @@ var snake = (function() {
         }
 
         currentDirection = {x:1, y:0};
+        targetDirection = {x:1, y:0};
 
     };
 
     return {
         reset: reset,
-        setCurrentDirection: setCurrentDirection,
+        setTargetDirection: setTargetDirection,
         move: move,
     };
 

@@ -37,9 +37,35 @@ var grid = (function() {
     // Append generated grid, grid generation is now finished.
     tableElement.appendChild(fragment);
 
+    // Returns a random integer in a range, from 0 to limit-1.
+    var randomNum = function(limit) {
+        return Math.floor(Math.random()*limit);
+    };
+
+    // Returns a random grid square DOM object.
+    var computeRandomSquare = function() {
+        var randomY = randomNum(gridDimensions.y)+1;
+        var randomX = randomNum(gridDimensions.x)+1;
+        console.log('computeRandomSquare() invoked, randomX: ' + randomX + ' randomY: ' + randomY);
+        return document.querySelector('tr:nth-of-type(' + randomY + ') > td:nth-of-type(' + randomX + ')' );
+    };
+
+    // Removes food from current square and generates a new one, making sure that the square isn't within the snake.
+    var regenerateFood = function() {
+        var currentFoodSquare = document.getElementById('food');
+        if (currentFoodSquare) {
+            currentFoodSquare.removeAttribute('id');
+        }
+        var randomSquare = computeRandomSquare();
+        while (randomSquare.classList.contains('snake')) {
+            randomSquare = computeRandomSquare();
+        }
+        randomSquare.setAttribute('id', 'food');
+    };
 
     return {
         tableElement: tableElement,
+        regenerateFood: regenerateFood,
     };
 
 }());

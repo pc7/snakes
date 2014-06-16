@@ -23,33 +23,28 @@ var gameController = (function() {
         };
     }());
 
-    // Temporary event handlers to test snake. Snake should set direction and move when arrow key pressed.
-    function sendTargetDirection(eventObject) {
-
-        console.log('gameController handleKeyPress() invoked. keyCode: ' + eventObject.keyCode);
-
-        switch (eventObject.keyCode) {
-            case 37:
-                snake.setTargetDirection({x:-1, y:0});
-                break;
-            case 38:
-                snake.setTargetDirection({x:0, y:1});
-                break;
-            case 39:
-                snake.setTargetDirection({x:1, y:0});
-                break;
-            case 40:
-                snake.setTargetDirection({x:0, y:-1});
-                break;
-        }
-
-    }
-
     // Adds or removes event listeners from keyboard.
-    // This is needed so the player doesn't change the snake's direction when the game is paused.
+    // This is needed so the player doesn't change the snake's direction when the game is not running.
     var toggleKeyboardEventListeners = (function() {
 
-        // Toggles between addEventListener and removeEventListener.
+        function sendTargetDirection(eventObject) {
+         switch (eventObject.keyCode) {
+                case 37:
+                    snake.setTargetDirection({x:-1, y:0});
+                    break;
+                case 38:
+                    snake.setTargetDirection({x:0, y:1});
+                    break;
+                case 39:
+                    snake.setTargetDirection({x:1, y:0});
+                    break;
+                case 40:
+                    snake.setTargetDirection({x:0, y:-1});
+                    break;
+            }
+        }
+
+        // Private variable that toggles between addEventListener and removeEventListener.
         var nextInvokation = document.addEventListener;
 
         return function() {
@@ -109,16 +104,18 @@ var gameController = (function() {
         score.reset();
         gameOverSpan.textContent = '';
         resumeGame();
+        grid.regenerateFood();
     };
 
     var foodEaten = function() {
         score.increment();
+        grid.regenerateFood();
     };
 
     // Replaces the current handler function on the game button with the argument function.
     // Enables the same button to be used to pause, resume and start a new game.
     var changeButtonEventHandler = (function() {
-        // Initial setup.
+        // Add event handler at the start of a new game.
         gameButton.addEventListener('click', startNewGame, false);
         var currentHandler = startNewGame;
         return function(newHandlerFunc) {

@@ -1,0 +1,18 @@
+html {
+  font-size: 62.5%;
+}
+
+#snakesGrid {
+  border-collapse: collapse;
+}
+
+#snakesGrid td {
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #aaa;
+}
+
+#snakesGrid .snake, 
+#snakesGrid #food {
+  background-color: grey;
+}

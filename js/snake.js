@@ -1,4 +1,5 @@
 /*
+ * Written by P Cope.
  * Stores snake position on grid, and implements movement.
  * Snake direction is controlled by user key presses. Snake move invokations are controlled by the gameController, which
  * invokes moves based on a timer.
@@ -37,10 +38,6 @@ var snake = (function() {
         console.assert(Math.abs(direction.x + direction.y) === 1, "Non-valid direction was set.");
 
         targetDirection = direction;
-
-        console.log('setTargetDirection invoked.');
-        console.log('... current direction is: x: ' + currentDirection.x + ' y: ' + currentDirection.y);
-        console.log('... target direction is: x: ' + targetDirection.x + ' y: ' + targetDirection.y);
 
     };
 
@@ -96,9 +93,6 @@ var snake = (function() {
     // Gets the target square to move the snake head into, and implements a move if possible.
     // Returns 'true' if food eaten, and 'false' if snake tries to eat itself (ie game over).
     var move = function() {
-
-        console.log('snake move() invoked.');
-        console.log('... target direction is: x: ' + targetDirection.x + ' y: ' + targetDirection.y);
 
         // If the target direction would cause the snake to go backwards into itself, ignore the requested target
         // direction. If not, the move can go ahead, so currentDirection is assigned the value of targetDirection.

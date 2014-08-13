@@ -1,4 +1,5 @@
 /*
+ * Written by P Cope.
  * Each grid square is a td element, and can be occupied by either the snake or by food.
  * State is tracked using CSS classes and IDs, which are '.snake' and '#food'.
  * These classes and IDs can be added and removed by the both the grid and snake objects.
@@ -46,7 +47,6 @@ var grid = (function() {
     var computeRandomSquare = function() {
         var randomY = randomNum(gridDimensions.y)+1;
         var randomX = randomNum(gridDimensions.x)+1;
-        console.log('computeRandomSquare() invoked, randomX: ' + randomX + ' randomY: ' + randomY);
         return document.querySelector('tr:nth-of-type(' + randomY + ') > td:nth-of-type(' + randomX + ')' );
     };
 

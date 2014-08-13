@@ -1,4 +1,5 @@
 /*
+ * Written by P Cope.
  * Controls game state, event handlers and score.
  * Snake object can tell the controller that the game is over.
  */
@@ -13,7 +14,7 @@ var gameController = (function() {
 
     var score = (function() {
         var total = 0;
-        function changeTotal(newTotal) {
+        var changeTotal = function(newTotal) {
             total = newTotal;
             scoreSpan.textContent = total;
         };
@@ -27,8 +28,8 @@ var gameController = (function() {
     // This is needed so the player doesn't change the snake's direction when the game is not running.
     var toggleKeyboardEventListeners = (function() {
 
-        function sendTargetDirection(eventObject) {
-         switch (eventObject.keyCode) {
+        var sendTargetDirection = function(eventObject) {
+            switch (eventObject.keyCode) {
                 case 37:
                     snake.setTargetDirection({x:-1, y:0});
                     break;
@@ -48,7 +49,15 @@ var gameController = (function() {
         var nextInvokation = document.addEventListener;
 
         return function() {
-            nextInvokation('keydown', sendTargetDirection, false);
+            // This 'if' statement is needed as addEventListener() can't be invoked through another identifier in IE11.
+            // Otherwise, the 'if' statement can be replaced by the single line below:
+            // nextInvokation('keydown', sendTargetDirection, false);
+            if (nextInvokation === document.addEventListener) {
+                document.addEventListener('keydown', sendTargetDirection, false);
+            } else {
+                document.removeEventListener('keydown', sendTargetDirection, false);
+            }
+
             nextInvokation = (nextInvokation===document.addEventListener) ? document.removeEventListener : document.addEventListener;
         };
     }());
@@ -67,7 +76,7 @@ var gameController = (function() {
         };
         return function() {
             if (token === null) {
-                token = setInterval(moveSnake, 300)
+                token = setInterval(moveSnake, 50)
             } else {
                 clearInterval(token);
                 token = null;

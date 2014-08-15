@@ -1,5 +1,5 @@
 /*
- * Written by P Cope.
+ * Copyright (c) P Cope 2014.
  * Stores snake position on grid, and implements movement.
  * Snake direction is controlled by user key presses. Snake move invokations are controlled by the gameController, which
  * invokes moves based on a timer.

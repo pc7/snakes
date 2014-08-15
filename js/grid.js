@@ -1,5 +1,5 @@
 /*
- * Written by P Cope.
+ * Copyright (c) P Cope 2014.
  * Each grid square is a td element, and can be occupied by either the snake or by food.
  * State is tracked using CSS classes and IDs, which are '.snake' and '#food'.
  * These classes and IDs can be added and removed by the both the grid and snake objects.

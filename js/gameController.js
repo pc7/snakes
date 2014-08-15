@@ -1,5 +1,5 @@
 /*
- * Written by P Cope.
+ * Copyright (c) P Cope 2014.
  * Controls game state, event handlers and score.
  * Snake object can tell the controller that the game is over.
  */

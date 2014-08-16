@@ -26,12 +26,12 @@ var grid = (function() {
     row.appendChild(cell);
 
     // Create a full row.
-    for(var i = 1; i < gridDimensions.x; i++) {
+    for (var i = 1; i < gridDimensions.x; i++) {
         row.appendChild(cell.cloneNode());
     }
 
     // Create the full grid.
-    for(var i = 1; i < gridDimensions.y; i++) {
+    for (var i = 1; i < gridDimensions.y; i++) {
         fragment.appendChild(row.cloneNode(true));
     }
 
